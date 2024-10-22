@@ -2,14 +2,12 @@ import json
 import pathlib
 
 from data.languages import SUPPORTED_LANGUAGES
-
-
-# Present this file with the fileContents
-# def detect_language(filePath):
+from pathlib import Path
 
 class ProgrammingLanguage:
-    def __init__(self, language, fileExtension, filePath, supported):
+    def __init__(self, language, notebook, fileExtension, filePath, supported):
         self.language = language
+        self.notebook = notebook
         self.fileExtension = fileExtension
         self.path = filePath
         self.supported = supported
@@ -21,17 +19,32 @@ class ProgrammingLanguage:
                 "Supported: %s") % (self.language, self.fileExtension, self.path, self.supported)
 
 
-def detect_extension(filePath):
-    path = pathlib.Path(filePath)
-    suffix = path.suffix
+def detect_langauge(filePath: Path) -> ProgrammingLanguage:
 
-    result = ProgrammingLanguage("", suffix, path, False)
+    # Layer 1: Look at extension
+    pl = detect_extension(filePath)
+
+    # Layer 1.1: Check Jupyter Notebook language
+    if pl.notebook:
+        pl.language = analyze_notebook(filePath)
+        if pl.language in SUPPORTED_LANGUAGES:
+            pl.supported = True
+
+    return pl
+
+
+def detect_extension(filePath: Path) -> ProgrammingLanguage:
+    suffix = filePath.suffix
+
+    result = ProgrammingLanguage("", False, suffix, filePath, False)
 
     match suffix:
         case ".ipynb":
-            result.language = analyze_notebook(filePath)
+            result.language = "Unknown"
+            result.notebook = True
 
-        case ".r":
+        # In the future also include for rmd files
+        case ".R":
             result.language = "R"
 
         case ".rdata" | ".rhistory" | ".rds" | ".rda":
@@ -43,14 +56,16 @@ def detect_extension(filePath):
     if result.language in SUPPORTED_LANGUAGES:
         result.supported = True
 
-    print(result)
+    #print(result)
+
+    return result
 
 
 # def detect_libraries(filePath):
 
 
 # Analyze Jupyter Notebooks, as these have a JSON file structure
-def analyze_notebook(filepath):
+def analyze_notebook(filepath: Path) -> str:
     with open(filepath, 'r', encoding='utf-8') as file:
         data = json.load(file)
         metadata = data['metadata']

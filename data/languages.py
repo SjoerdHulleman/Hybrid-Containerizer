@@ -3,3 +3,7 @@ SUPPORTED_LANGUAGES = {
     'python',
     'c++'
 }
+
+SUPPORTED_R_PACKAGES = {
+    'Rcpp'
+}
