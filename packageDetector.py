@@ -65,4 +65,5 @@ def find_used_supported_packages(input):
 
     print('Of which the following are supported:')
     print(used_supported_packages)
+
     return used_supported_packages

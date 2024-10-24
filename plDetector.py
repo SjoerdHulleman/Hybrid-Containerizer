@@ -5,7 +5,7 @@ from data.languages import SUPPORTED_LANGUAGES
 from pathlib import Path
 
 class ProgrammingLanguage:
-    def __init__(self, language, notebook, fileExtension, filePath, supported):
+    def __init__(self, language: str, notebook: bool, fileExtension: str, filePath: Path, supported: bool):
         self.language = language
         self.notebook = notebook
         self.fileExtension = fileExtension
@@ -55,8 +55,6 @@ def detect_extension(filePath: Path) -> ProgrammingLanguage:
 
     if result.language in SUPPORTED_LANGUAGES:
         result.supported = True
-
-    #print(result)
 
     return result
 
