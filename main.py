@@ -51,6 +51,10 @@ def program(file_path_input):
 
         cppModifier.write_cpp_file(stripped_cpp, modified_cpp_name)
 
+        mod_path = pathlib.Path(modified_cpp_name)
+
+        cppModifier.extract_cpp_functions(mod_path)
+
 
 program('data/05_IntegratedPPems_small.R')
 
