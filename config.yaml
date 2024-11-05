@@ -1,0 +1,3 @@
+environment:
+  # e.g. C:\Program Files\LLVM\bin
+  llvm_path: C:\Program Files\LLVM\bin

@@ -12,11 +12,12 @@ from plDetector import analyze_notebook, detect_extension
 from packageDetector import find_R_packages
 
 import subprocess
+import yaml
+
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
 
 
 def convert_rmd():
@@ -29,10 +30,16 @@ def convert_rmd():
 #     if 'Rcpp' in packages:
 
 
-
-
 def program(file_path_input):
     path = pathlib.Path(file_path_input)
+    llvm_path = ''
+
+    with open("config.yaml", "r") as yaml_file:
+        config = yaml.safe_load(yaml_file)
+        llvm_path = config["environment"]["llvm_path"]
+
+    if llvm_path is None or llvm_path == '':
+        raise Exception("LLVM path is not specified in config.yaml")
 
     # Check which programming language we have
     pl = plDetector.detect_langauge(path)
@@ -53,7 +60,7 @@ def program(file_path_input):
 
         mod_path = pathlib.Path(modified_cpp_name)
 
-        cppModifier.extract_cpp_functions(mod_path)
+        cppModifier.extract_cpp_functions(mod_path, llvm_path)
 
 
 program('data/05_IntegratedPPems_small.R')

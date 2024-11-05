@@ -5,15 +5,28 @@ import pathlib
 
 import clang.cindex
 
-class CppFunction:
-    def __init__(self, functionName: str, parameters, output, body):
-        self.functionName = functionName
-        self.parameters = parameters
-        self.output = output
-        self.body = body
+class CppParam:
+    def __init__(self, name: str, paramType: str):
+        self.name = name
+        self.paramType = paramType
 
     def __repr__(self):
-        return self.functionName
+        return("%s : %s" % (self.name, self.paramType))
+
+class CppFunction:
+    def __init__(self, functionName: str, returnType, parameters: list[CppParam], startLine: int, endLine: int):
+        self.functionName = functionName
+        self.returnType = returnType
+        self.parameters = parameters
+        self.startLine = startLine
+        self.endLine = endLine
+
+    def __repr__(self):
+        return (("Name: %s \n"
+                "Return type: %s \n"
+                "Params: %s \n"
+                "Lines: %s - %s")
+                % (self.functionName, self.returnType, self.parameters, self.startLine, self.endLine))
 
 def find_cpp_file(language: ProgrammingLanguage) -> pathlib.Path:
     print(language.path)
@@ -73,21 +86,8 @@ def write_cpp_file(lines: list[str], cpp_file_path: pathlib):
 
 
 # Check https://learn.microsoft.com/en-us/cpp/cpp/functions-cpp?view=msvc-170 for function declaration options
-def extract_cpp_functions(cpp_file_path: pathlib.Path) -> list[str]:
-    # Prerequisite is to have CastXML installed on machine
-    # generator_path = pygccxml.utils.find_xml_generator("castxml")
-    # xml_generator_config = pygccxml.parser.xml_generator_configuration_t(
-    #     xml_generator_path=generator_path,
-    #     xml_generator="castxml"
-    # )
-    #
-    # declarations = pygccxml.parse([cpp_file_path], xml_generator_config)
-    #
-    # print(pygccxml.declarations.get_free_functions(declarations))
-
-
-    # With clang
-    clang.cindex.Config.set_library_path(r"C:\Program Files\LLVM\bin")
+def extract_cpp_functions(cpp_file_path: pathlib.Path, llvm_path: pathlib.Path) -> list[str]:
+    clang.cindex.Config.set_library_path(llvm_path)
 
     index = clang.cindex.Index.create()
 
@@ -100,11 +100,22 @@ def extract_cpp_functions(cpp_file_path: pathlib.Path) -> list[str]:
 
 def extract_functions(node, functions):
     if node.kind == clang.cindex.CursorKind.FUNCTION_DECL:
+
         # Get function details
         func_name = node.spelling
         return_type = node.result_type.spelling
-        args = [(arg.spelling, arg.type.spelling) for arg in node.get_arguments()]
-        functions.append((func_name, return_type, args))
+        args = [CppParam(arg.spelling, arg.type.spelling) for arg in node.get_arguments()]
+        start_line = node.extent.start.line
+        end_line = node.extent.end.line
+
+        # Add to functions list in correct format
+        functions.append(CppFunction(
+            func_name,
+            return_type,
+            args,
+            start_line,
+            end_line
+        ))
         # Recurse for child nodes
     for child in node.get_children():
         extract_functions(child, functions)
