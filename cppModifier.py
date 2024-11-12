@@ -98,6 +98,11 @@ def extract_cpp_functions(cpp_file_path: pathlib.Path, llvm_path: pathlib.Path) 
 
     print(functions)
 
+# def replace_rcpp(cpp_filePath: pathlib.Path):
+#
+
+
+
 def extract_functions(node, functions):
     if node.kind == clang.cindex.CursorKind.FUNCTION_DECL:
 

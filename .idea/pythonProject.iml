@@ -3,6 +3,10 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/CppBase/.vs" />
+      <excludeFolder url="file://$MODULE_DIR$/CppBase/CppBase" />
+      <excludeFolder url="file://$MODULE_DIR$/CppBase/vcpkg_installed" />
+      <excludeFolder url="file://$MODULE_DIR$/CppBase/x64" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.12 (pythonProject)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
