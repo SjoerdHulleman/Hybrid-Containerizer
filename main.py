@@ -30,6 +30,20 @@ def convert_rmd():
 #     if 'Rcpp' in packages:
 
 
+def program_temp(file_path_input):
+    path = pathlib.Path(file_path_input)
+    llvm_path = ''
+
+    with open("config.yaml", "r") as yaml_file:
+        config = yaml.safe_load(yaml_file)
+        llvm_path = config["environment"]["llvm_path"]
+
+    if llvm_path is None or llvm_path == '':
+        raise Exception("LLVM path is not specified in config.yaml")
+
+    cppModifier.extract_cpp_functions(path, llvm_path)
+
+
 def program(file_path_input):
     path = pathlib.Path(file_path_input)
     llvm_path = ''
@@ -63,7 +77,9 @@ def program(file_path_input):
         cppModifier.extract_cpp_functions(mod_path, llvm_path)
 
 
-program('data/05_IntegratedPPems_small.R')
+# program('data/05_IntegratedPPems_small.R')
+
+program_temp("data/test_cpp.cpp")
 
 # Press the green button in the gutter to run the script.
 # packageDetector.find_used_supported_packages(pathlib.Path('data/05_IntegratedPPems_small.R'))

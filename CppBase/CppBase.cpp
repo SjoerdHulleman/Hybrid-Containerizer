@@ -3,8 +3,41 @@
 
 #include <iostream>
 #include <crow.h>
-#include <Rcpp.h>
-using namespace Rcpp;
+
+
+std::vector<std::vector<double>> parseCSVFromString(const std::string csv) {
+    std::vector<std::vector<double>> data;
+
+    std::stringstream stream = std::stringstream(csv);
+    std::string line;
+
+    while (stream >> line) {
+        std::stringstream lineStream = std::stringstream(line);
+        std::string cell;
+        std::vector<double> row;
+
+        while (std::getline(lineStream, cell, ',')) {
+            try {
+                // Convert string in cell to double
+                row.push_back(std::stod(cell));
+            }
+            catch (const std::invalid_argument& e) {
+                // Handle invalid conversion (e.g., non-numeric data)
+                std::cerr << "Warning: Invalid number found, setting to 0.0: " << cell << std::endl;
+                row.push_back(0.0);  // Handle invalid values by setting them to 0.0
+            }
+            catch (const std::out_of_range& e) {
+                // Handle numbers that are too large to fit in a double
+                std::cerr << "Warning: Out of range number, setting to 0.0: " << cell << std::endl;
+                row.push_back(0.0);  // Handle out-of-range values
+            }
+        }
+
+        data.push_back(row);
+    }
+
+    return data;
+}
 
 // This file functions as a boiler plate for the CppModifier.
 int main()
@@ -31,6 +64,8 @@ int main()
         std::string data = req.body;
 
         //std::cout << data << std::endl;
+
+        std::vector<std::vector<double>> result = parseCSVFromString(data);
 
         return crow::response(200, "Received CSV file");
     });

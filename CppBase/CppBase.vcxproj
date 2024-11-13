@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CppBase.cpp" />
+    <ClCompile Include="TestFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="crow_all.h" />

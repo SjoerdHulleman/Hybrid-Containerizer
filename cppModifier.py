@@ -1,9 +1,9 @@
-
 from plDetector import ProgrammingLanguage
 import re
 import pathlib
 
 import clang.cindex
+
 
 class CppParam:
     def __init__(self, name: str, paramType: str):
@@ -11,7 +11,8 @@ class CppParam:
         self.paramType = paramType
 
     def __repr__(self):
-        return("%s : %s" % (self.name, self.paramType))
+        return ("%s : %s" % (self.name, self.paramType))
+
 
 class CppFunction:
     def __init__(self, functionName: str, returnType, parameters: list[CppParam], startLine: int, endLine: int):
@@ -23,10 +24,11 @@ class CppFunction:
 
     def __repr__(self):
         return (("Name: %s \n"
-                "Return type: %s \n"
-                "Params: %s \n"
-                "Lines: %s - %s")
+                 "Return type: %s \n"
+                 "Params: %s \n"
+                 "Lines: %s - %s")
                 % (self.functionName, self.returnType, self.parameters, self.startLine, self.endLine))
+
 
 def find_cpp_file(language: ProgrammingLanguage) -> pathlib.Path:
     print(language.path)
@@ -41,7 +43,6 @@ def find_cpp_file(language: ProgrammingLanguage) -> pathlib.Path:
                 result = re.sub(r'\s*#.*', '', line)
 
                 cpp_file_name = result.strip().strip("sourceCpp(\"").strip("\")")
-
 
     cpp_file_path = pathlib.Path(parent_path) / cpp_file_name
 
@@ -79,6 +80,7 @@ def strip_comments(cpp_file_path: pathlib.Path) -> list[str]:
 
         return lines
 
+
 def write_cpp_file(lines: list[str], cpp_file_path: pathlib):
     with open(cpp_file_path, 'w', encoding='utf-8') as file:
         for line in lines:
@@ -91,21 +93,37 @@ def extract_cpp_functions(cpp_file_path: pathlib.Path, llvm_path: pathlib.Path) 
 
     index = clang.cindex.Index.create()
 
-    translation_unit = index.parse(cpp_file_path)
+    translation_unit = index.parse(cpp_file_path, args=['-std=c++17', '-fsyntax-only', '-ferror-limit=0', ])
     functions = []
 
-    extract_functions(translation_unit.cursor, functions)
+    extract_functions(translation_unit.cursor, functions, cpp_file_path)
 
     print(functions)
+
 
 # def replace_rcpp(cpp_filePath: pathlib.Path):
 #
 
 
+# def extract_functions(node, functions):
+#     try:
+#         print(f"Processing node kind: {node.kind}")
+#         if node.kind == clang.cindex.CursorKind.FUNCTION_DECL:
+#             print(node.extent.start.line, " - ", node.extent.end.line)
+#             print(node.location.file.name)
+#     # Existing function extraction logic...
+#     except ValueError as e:
+#         print(f"Error encountered: {e}")
+#     for child in node.get_children():
+#         extract_functions(child, functions)
 
-def extract_functions(node, functions):
-    if node.kind == clang.cindex.CursorKind.FUNCTION_DECL:
-
+def extract_functions(node, functions, filepath: pathlib.Path):
+    # Match the filepaths and only consider the submitted file, else clang will go over the includes
+    if (
+            (node.location.file is not None)
+            and (pathlib.Path(node.location.file.name).as_posix() == filepath.as_posix())
+            and (node.kind == clang.cindex.CursorKind.FUNCTION_DECL)
+    ):
         # Get function details
         func_name = node.spelling
         return_type = node.result_type.spelling
@@ -123,9 +141,8 @@ def extract_functions(node, functions):
         ))
         # Recurse for child nodes
     for child in node.get_children():
-        extract_functions(child, functions)
+        extract_functions(child, functions, filepath)
 
     # with open(cpp_file_path, 'r', encoding='utf-8') as file:
     #
     #     # for line in file:
-
