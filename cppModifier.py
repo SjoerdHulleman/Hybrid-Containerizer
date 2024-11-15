@@ -88,7 +88,7 @@ def write_cpp_file(lines: list[str], cpp_file_path: pathlib):
 
 
 # Check https://learn.microsoft.com/en-us/cpp/cpp/functions-cpp?view=msvc-170 for function declaration options
-def extract_cpp_functions(cpp_file_path: pathlib.Path, llvm_path: pathlib.Path) -> list[str]:
+def extract_cpp_functions(cpp_file_path: pathlib.Path, llvm_path: pathlib.Path) -> list[CppFunction]:
     clang.cindex.Config.set_library_path(llvm_path)
 
     index = clang.cindex.Index.create()
@@ -98,24 +98,11 @@ def extract_cpp_functions(cpp_file_path: pathlib.Path, llvm_path: pathlib.Path) 
 
     extract_functions(translation_unit.cursor, functions, cpp_file_path)
 
-    print(functions)
+    return functions
 
 
-# def replace_rcpp(cpp_filePath: pathlib.Path):
-#
-
-
-# def extract_functions(node, functions):
-#     try:
-#         print(f"Processing node kind: {node.kind}")
-#         if node.kind == clang.cindex.CursorKind.FUNCTION_DECL:
-#             print(node.extent.start.line, " - ", node.extent.end.line)
-#             print(node.location.file.name)
-#     # Existing function extraction logic...
-#     except ValueError as e:
-#         print(f"Error encountered: {e}")
-#     for child in node.get_children():
-#         extract_functions(child, functions)
+def replace_rcpp(cpp_filePath: pathlib.Path):
+    print("Feature to be added in later stage")
 
 def extract_functions(node, functions, filepath: pathlib.Path):
     # Match the filepaths and only consider the submitted file, else clang will go over the includes

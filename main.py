@@ -5,6 +5,7 @@ import pathlib
 import cppModifier
 import packageDetector
 import plDetector
+import rModifier
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
@@ -30,6 +31,12 @@ def convert_rmd():
 #     if 'Rcpp' in packages:
 
 
+# def modify_r(r_file, cpp_file):
+#     r_file_path = pathlib.Path(r_file)
+#     cpp_file_path = pathlib.Path(cpp_file)
+#
+#
+
 def program_temp(file_path_input):
     path = pathlib.Path(file_path_input)
     llvm_path = ''
@@ -41,7 +48,21 @@ def program_temp(file_path_input):
     if llvm_path is None or llvm_path == '':
         raise Exception("LLVM path is not specified in config.yaml")
 
-    cppModifier.extract_cpp_functions(path, llvm_path)
+    functions = cppModifier.extract_cpp_functions(path, llvm_path)
+
+    r_file_path = pathlib.Path("data/05_IntegratedPPems_small.R")
+
+    print(functions)
+    function_calls = []
+    for function in functions:
+        function_call = rModifier.replace_function_call(function, r_file_path)
+        function_calls.append(function_call)
+
+    for function_call in function_calls:
+        print(function_call)
+        print("")
+        print("--------------------------")
+        print("")
 
 
 def program(file_path_input):
