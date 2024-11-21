@@ -3,8 +3,9 @@ import pathlib
 import cppModifier
 import re
 
-class RFunctioncall:
-    def __init__(self, start_line: int, end_line: int, assigned_var, arguments: list[str]):
+class RFunctionCall:
+    def __init__(self, name: str, start_line: int, end_line: int, assigned_var, arguments: list[str]):
+        self.name = name
         self.start_line = start_line
         self.end_line = end_line
         self.assigned_var = assigned_var
@@ -17,7 +18,16 @@ class RFunctioncall:
                 f"Assigned variable: {self.assigned_var}\n")
 
 
-def replace_function_call(function: cppModifier.CppFunction, r_file_path: pathlib.Path):
+def find_function_calls(functions: list[cppModifier.CppFunction], r_file_path: pathlib.Path) -> list[RFunctionCall]:
+    function_calls: list[RFunctionCall] = []
+    for function in functions:
+        temp = find_function_call(function, r_file_path)
+        function_calls = function_calls + temp
+
+    return function_calls
+
+
+def find_function_call(function: cppModifier.CppFunction, r_file_path: pathlib.Path) -> list[RFunctionCall]:
     with open(r_file_path, 'r', encoding='utf-8') as file:
         content = file.read()
         file.seek(0) # Reset pointer to read lines
@@ -27,7 +37,7 @@ def replace_function_call(function: cppModifier.CppFunction, r_file_path: pathli
         function_start_regex = rf"\b{function.functionName}\s*\("
         function_matches = re.finditer(function_start_regex, content)
 
-        function_calls = []
+        function_calls: list[RFunctionCall] = []
 
         # Account for multiple calls to the same function
         for function_match in function_matches:
@@ -65,7 +75,8 @@ def replace_function_call(function: cppModifier.CppFunction, r_file_path: pathli
                 assignment_line = re.split(r'<-|=', lines[start_line - 1])
                 assigned_variable = re.sub(r'\s*', '', assignment_line[0])
 
-                function_calls.append(RFunctioncall(
+                function_calls.append(RFunctionCall(
+                    function.functionName,
                     start_line,
                     end_line,
                     assigned_variable,
@@ -111,3 +122,30 @@ def extract_arguments(function_call: str, function_name: str) -> list:
     result.append(function_call[start:].strip())
 
     return result
+
+
+def replace_function_calls(function_calls: list[RFunctionCall], cpp_functions: list[cppModifier.CppFunction], r_file_path: pathlib.Path):
+    for function_call in function_calls:
+        function = next(function for function in cpp_functions if function.functionName == function_call.name)
+
+        print(f"----- {function.functionName} -----")
+        # For each argument in the function call, create an appropriate data structure
+        for index, argument in enumerate(function_call.arguments):
+            param = function.parameters[index]
+            cleaned_argument = re.sub(r"^\s*const\s*", "", param.paramType)
+            cleaned_argument = re.sub
+
+            print(cleaned_argument)
+
+            # print(function.parameters[index])
+            # Write logic to replace the call depending on the type
+
+            # Check if it is a Matrix
+
+
+            # Check if it is a Vector
+
+
+
+
+

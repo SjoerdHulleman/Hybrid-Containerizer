@@ -55,7 +55,7 @@ def program_temp(file_path_input):
     print(functions)
     function_calls = []
     for function in functions:
-        function_call = rModifier.replace_function_call(function, r_file_path)
+        function_call = rModifier.find_function_call(function, r_file_path)
         function_calls.append(function_call)
 
     for function_call in function_calls:
@@ -91,16 +91,23 @@ def program(file_path_input):
         modified_cpp_name = modified_cpp_name.as_posix()
         modified_cpp_name = pathlib.Path(modified_cpp_name + '_mod.cpp')
 
-        cppModifier.write_cpp_file(stripped_cpp, modified_cpp_name)
+        modified_cpp_name = pathlib.Path('data/test_cpp.cpp')
+
+        # cppModifier.write_cpp_file(stripped_cpp, modified_cpp_name)
 
         mod_path = pathlib.Path(modified_cpp_name)
 
-        cppModifier.extract_cpp_functions(mod_path, llvm_path)
+        functions = cppModifier.extract_cpp_functions(mod_path, llvm_path)
+
+        function_calls = rModifier.find_function_calls(functions, file_path_input)
+
+        rModifier.replace_function_calls(function_calls, functions, file_path_input)
 
 
-# program('data/05_IntegratedPPems_small.R')
 
-program_temp("data/test_cpp.cpp")
+program('data/05_IntegratedPPems_small.R')
+
+# program_temp("data/test_cpp.cpp")
 
 # Press the green button in the gutter to run the script.
 # packageDetector.find_used_supported_packages(pathlib.Path('data/05_IntegratedPPems_small.R'))
