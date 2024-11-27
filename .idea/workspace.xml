@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6c4fc131-ac6e-4ef8-85b0-57602e16b3c1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/data/cpp_backup.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CppBase/CppBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CppBase/CppBase.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CppBase/TestFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/CppBase/TestFile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/test_cpp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/data/test_cpp.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rModifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/rModifier.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -123,7 +119,10 @@
       <workItem from="1732017634798" duration="2790000" />
       <workItem from="1732024854135" duration="6543000" />
       <workItem from="1732101628600" duration="4417000" />
-      <workItem from="1732185237647" duration="2159000" />
+      <workItem from="1732185237647" duration="2806000" />
+      <workItem from="1732306774022" duration="53000" />
+      <workItem from="1732619654044" duration="7290000" />
+      <workItem from="1732703787336" duration="7222000" />
     </task>
     <servers />
   </component>
@@ -160,6 +159,6 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/pythonProject$main.coverage" NAME="main Coverage Results" MODIFIED="1732104153488" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pythonProject$main.coverage" NAME="main Coverage Results" MODIFIED="1732716390997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

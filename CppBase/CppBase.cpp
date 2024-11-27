@@ -41,33 +41,33 @@
 //}
 
 
-//template <typename T>
-//std::string toCSV(const std::vector<T>& vec) {
-//    std::stringstream ss;
-//    for (size_t i = 0; i < vec.size(); ++i) {
-//        ss << vec[i];
-//        if (i != vec.size() - 1) {
-//            ss << ",";  // Add comma separator for each element except the last one
-//        }
-//    }
-//    ss << "\n";  // New line after the vector
-//    return ss.str();
-//}
-//
-//template <typename T>
-//std::string toCSV(const std::vector<std::vector<T>>& matrix) {
-//    std::stringstream ss;
-//    for (const auto& row : matrix) {
-//        for (size_t i = 0; i < row.size(); ++i) {
-//            ss << row[i];
-//            if (i != row.size() - 1) {
-//                ss << ",";  // Add comma separator for each element except the last one
-//            }
-//        }
-//        ss << "\n";  // New line after each row
-//    }
-//    return ss.str();
-//}
+template <typename T>
+std::string toCSV(const std::vector<T>& vec) {
+    std::stringstream ss;
+    for (size_t i = 0; i < vec.size(); ++i) {
+        ss << vec[i];
+        if (i != vec.size() - 1) {
+            ss << ",";  // Add comma separator for each element except the last one
+        }
+    }
+    ss << "\n";  // New line after the vector
+    return ss.str();
+}
+
+template <typename T>
+std::string toCSV(const std::vector<std::vector<T>>& matrix) {
+    std::stringstream ss;
+    for (const auto& row : matrix) {
+        for (size_t i = 0; i < row.size(); ++i) {
+            ss << row[i];
+            if (i != row.size() - 1) {
+                ss << ",";  // Add comma separator for each element except the last one
+            }
+        }
+        ss << "\n";  // New line after each row
+    }
+    return ss.str();
+}
 
 // TODO: Make more efficient/readable
 std::vector<double> parseCSVLine(const std::string& csv) {
