@@ -4,6 +4,7 @@ import pathlib
 from data.languages import SUPPORTED_LANGUAGES
 from pathlib import Path
 
+
 class ProgrammingLanguage:
     def __init__(self, language: str, notebook: bool, fileExtension: str, filePath: Path, supported: bool):
         self.language = language
@@ -20,7 +21,6 @@ class ProgrammingLanguage:
 
 
 def detect_langauge(filePath: Path) -> ProgrammingLanguage:
-
     # Layer 1: Look at extension
     pl = detect_extension(filePath)
 

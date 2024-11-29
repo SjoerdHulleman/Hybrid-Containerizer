@@ -12,7 +12,8 @@ class RFunctionCall:
         self.arguments = arguments
 
     def __repr__(self):
-        return (f"R function call of C++ function on lines {self.start_line} - {self.end_line}:\n"
+        return (f"Called function: {self.name}\n"
+                f"Lines {self.start_line} - {self.end_line}:\n"
                 f"Arguments:\n"
                 f"{self.arguments}\n"
                 f"Assigned variable: {self.assigned_var}\n")

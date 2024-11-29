@@ -133,3 +133,4 @@ def extract_functions(node, functions, filepath: pathlib.Path):
     # with open(cpp_file_path, 'r', encoding='utf-8') as file:
     #
     #     # for line in file:
+

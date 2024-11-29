@@ -98,10 +98,11 @@ def program(file_path_input):
         mod_path = pathlib.Path(modified_cpp_name)
 
         functions = cppModifier.extract_cpp_functions(mod_path, llvm_path)
+        # print(functions)
 
         function_calls = rModifier.find_function_calls(functions, file_path_input)
-
-        rModifier.replace_function_calls(function_calls, functions, file_path_input)
+        print(function_calls)
+        #rModifier.replace_function_calls(function_calls, functions, file_path_input)
 
 
 
