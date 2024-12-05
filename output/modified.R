@@ -184,10 +184,10 @@ Rad_bottom <- data.frame(Bat_xyv, rad = colMeans(Rad))
 
 
 ## -----------------------------------------------------------------------------
-save(file = "../output_data/Pelagic_t.rda", Pelagic_t)
-save(file = "../output_data/Benthic_t.rda", Benthic_t)
-save(file = "../output_data/Pelagic_xy.rda", Pelagic_xy)
-save(file = "../output_data/Benthic_xy.rda", Benthic_xy)
+# save(file = "../output_data/Pelagic_t.rda", Pelagic_t)
+# save(file = "../output_data/Benthic_t.rda", Benthic_t)
+# save(file = "../output_data/Pelagic_xy.rda", Pelagic_xy)
+# save(file = "../output_data/Benthic_xy.rda", Benthic_xy)
 
 
 ## ----fig.width=10, fig.height=6-----------------------------------------------

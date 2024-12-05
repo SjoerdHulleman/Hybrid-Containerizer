@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CppBase.cpp" />
+    <ClCompile Include="Template.cpp" />
     <ClCompile Include="TestFile.cpp" />
   </ItemGroup>
   <ItemGroup>

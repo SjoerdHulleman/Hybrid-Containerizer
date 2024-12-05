@@ -2,6 +2,10 @@
 //
 
 #include "CSVHelper.h"
+#include <iostream>
+#include <list>
+#include <string>
+
 
 std::vector<std::any> convertInputs(
         std::list<std::string> inputs,
@@ -89,6 +93,8 @@ int main()
     CROW_ROUTE(app, "/test")([]() {
         return "Hello test";
     });
+
+    // # MARKER FOR AUTO GENERATION #
 
 
     CROW_ROUTE(app, "/upload_csv").methods("POST"_method)

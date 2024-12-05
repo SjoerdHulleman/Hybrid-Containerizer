@@ -102,6 +102,8 @@ def program(file_path_input):
 
         function_calls = rModifier.find_function_calls(functions, file_path_input)
         print(function_calls)
+
+        cppModifier.create_api(modified_cpp_name, pathlib.Path('data/Template.cpp'), functions)
         #rModifier.replace_function_calls(function_calls, functions, file_path_input)
 
 
