@@ -106,7 +106,7 @@ def replace_rcpp(cpp_filePath: pathlib.Path):
     print("Feature to be added in later stage")
 
 def extract_functions(node, functions, filepath: pathlib.Path):
-    # Match the filepaths and only consider the submitted file, else clang will go over the includes
+    # Match the filepaths and only consider the submitted file (second statement), else clang will go over the includes
     if (
             (node.location.file is not None)
             and (pathlib.Path(node.location.file.name).as_posix() == filepath.as_posix())
@@ -127,17 +127,21 @@ def extract_functions(node, functions, filepath: pathlib.Path):
             start_line,
             end_line
         ))
-        # Recurse for child nodes
+
+    # Recurse for child nodes
     for child in node.get_children():
         extract_functions(child, functions, filepath)
 
-    # with open(cpp_file_path, 'r', encoding='utf-8') as file:
-    #
-    #     # for line in file:
 
-def create_api(source_cpp_path: pathlib.Path, base_cpp_path: pathlib.Path, functions: list[CppFunction]):
+def create_api(source_cpp_path: pathlib.Path, base_cpp_path: pathlib.Path, functions: list[CppFunction], use_json: bool = False):
     # Copy the base to the output directory so we can start modifying
     output_path = pathlib.Path('./output/modified.cpp')
+
+    if use_json:
+        output_path = pathlib.Path('./CppProjectOutputJSON/modified.cpp')
+    else:
+        output_path = pathlib.Path('./CppProjectOutputCSV/modified.cpp')
+
     shutil.copyfile(base_cpp_path, output_path)
     with open(source_cpp_path, 'r') as source_file:
         source_lines = source_file.readlines()
@@ -152,10 +156,7 @@ def create_api(source_cpp_path: pathlib.Path, base_cpp_path: pathlib.Path, funct
             # Reset pointer and read lines again and add API endpoints
             output_file.seek(0)
             template_lines = output_file.readlines()
-            add_api_endpoints_to_cpp(functions, template_lines, output_path)
-
-
-
+            add_api_endpoints_to_cpp(functions, template_lines, output_path, use_json)
 
     source_file.close()
 
@@ -184,7 +185,7 @@ def add_functions_to_cpp(functions: list[CppFunction], template_lines: list[str]
             output_file.write(line)
 
 
-def add_api_endpoints_to_cpp(functions: list[CppFunction], template_lines: list[str], target_file: pathlib.Path):
+def add_api_endpoints_to_cpp(functions: list[CppFunction], template_lines: list[str], target_file: pathlib.Path, use_json: bool = False):
     api_lines = ""
     for function in functions:
         api_lines += (f'\tCROW_ROUTE(app, "/{function.functionName}")\n'
@@ -222,17 +223,28 @@ def add_api_endpoints_to_cpp(functions: list[CppFunction], template_lines: list[
 
         api_lines += (f'\t\t{function.returnType} result = {function.functionName}({param_names});\n'
                       f'\t\t// ----- End of auto generate assigned converted results and function call -----\n'
-                      '\n'
+                      '\n')
+
+        if use_json:
+            api_lines += (
+                      f'\t\tjson json_result = result;\n'
+                      f'\t\tcrow::response response(json_result.dump());\n'
+                      f'\t\tresponse.add_header("Content-Type", "application/json");\n'
+            )
+        else:
+            api_lines += (
                       f'\t\tstd::string csv_result = toCSV(result);\n'
                       '\n'
                       f'\t\tcrow::response response(csv_result);\n'
                       f'\t\tresponse.add_header("Content-Type", "text/csv");\n'
                       '\n'
+            )
+        api_lines += (
                       f'\t\tstd::cout << "Sending response for {function.functionName}" << std::endl;\n'
                       '\n'
                       '\t\treturn response;\n'
                       '\t});\n\n'
-                      )
+        )
 
     # Find marker for correct function insertion and insert
     marker = '    // # MARKER: API ENDPOINTS #\n'

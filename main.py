@@ -68,10 +68,12 @@ def program_temp(file_path_input):
 def program(file_path_input):
     path = pathlib.Path(file_path_input)
     llvm_path = ''
+    use_json = False
 
     with open("config.yaml", "r") as yaml_file:
         config = yaml.safe_load(yaml_file)
         llvm_path = config["environment"]["llvm_path"]
+        use_json = config["settings"]["use_json"]
 
     if llvm_path is None or llvm_path == '':
         raise Exception("LLVM path is not specified in config.yaml")
@@ -103,8 +105,12 @@ def program(file_path_input):
         function_calls = rModifier.find_function_calls(functions, file_path_input)
         print(function_calls)
 
-        cppModifier.create_api(modified_cpp_name, pathlib.Path('data/Template.cpp'), functions)
-        #rModifier.replace_function_calls(function_calls, functions, file_path_input)
+        template_path = pathlib.Path('data/templates/CSVTemplate.cpp')
+        if use_json:
+            template_path = pathlib.Path('data/templates/JSONTemplate.cpp')
+
+        cppModifier.create_api(modified_cpp_name, template_path, functions, use_json)
+        rModifier.replace_function_calls(function_calls, functions, file_path_input, True)
 
 
 

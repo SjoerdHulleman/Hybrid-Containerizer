@@ -147,12 +147,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CppBase.cpp" />
-    <ClCompile Include="Template.cpp" />
+    <ClCompile Include="JSONTemplate.cpp" />
+    <ClCompile Include="Output.cpp" />
+    <ClCompile Include="CSVTemplate.cpp" />
     <ClCompile Include="TestFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="crow_all.h" />
     <ClInclude Include="CSVHelper.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="JSONHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
