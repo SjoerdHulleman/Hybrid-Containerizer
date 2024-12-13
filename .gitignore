@@ -3,7 +3,12 @@ CppBase/x64
 CppBase/vcpkg_installed
 CppBase/CppBase
 CppBase/.vs
-
+CppBase/asio
+CppProjectOutputCSV/asio
+CppProjectOutputCSV/.vs
+CppProjectOutputJSON/asio
+CppProjectOutputJSON/.vs
+CppProjectOutputTest
 
 # Prerequisites
 *.d

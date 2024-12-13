@@ -14,6 +14,9 @@ from packageDetector import find_R_packages
 
 import subprocess
 import yaml
+import requests
+import nbformat
+import json
 
 
 def print_hi(name):
@@ -25,6 +28,22 @@ def convert_rmd():
     command = "knitr::purl('data/05_IntegratedPPems_small.Rmd', output='data/05_IntegratedPPems_small.R')"
     result = subprocess.run(["Rscript", "-e", command], capture_output=True, text=True)
     print(result)
+
+
+def convert_r_to_notebook(filePath: pathlib.Path):
+    with open (filePath) as file:
+        code = file.read()
+        notebook = nbformat.v4.new_notebook()
+        notebook['cells'] = [nbformat.v4.new_code_cell(code)]
+
+        output_path = 'output/modified.ipynb'
+
+        with open(output_path, 'w') as newFile:
+            nbformat.write(notebook, newFile)
+            newFile.close()
+
+        file.close()
+
 
 
 # def program_R(pl, packages):
@@ -112,6 +131,76 @@ def program(file_path_input):
         cppModifier.create_api(modified_cpp_name, template_path, functions, use_json)
         rModifier.replace_function_calls(function_calls, functions, file_path_input, True)
 
+
+        convert_r_to_notebook('output/modified.R')
+
+        notebook_path = pathlib.Path('output/modified.ipynb')
+
+        with open(notebook_path) as notebook_file:
+            notebook = nbformat.read(notebook_file, as_version=4)
+
+            extract_cell_data = {
+                "data": {
+                    "cell_index": 0,
+                    "kernel": "IRkernel",
+                    "notebook": notebook,
+                    "save": True,
+                    "base_image_name": "r"
+                }
+            }
+
+            print(extract_cell_data)
+
+            extract_cell_url = "http://localhost:8000/extract_cell"
+
+            fake_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjkwMDAwMDAwMDAsImlhdCI6MTcyODk4MTczOCwiYXV0aF90aW1lIjoxNzI4OTgxNzM4LCJqdGkiOiJjZWFlYjlhMC0zZjQxLTRiZmEtYTgzMS02OTdmYjUzNzdlMTAiLCJpc3MiOiJodHRwczovL25hYXZyZS1kZXYudGVzdC9hdXRoL3JlYWxtcy92cmUiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAwIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoibmFhdnJlIiwic2Vzc2lvbl9zdGF0ZSI6IjQ4NmJmM2U3LTIyYzItNDQyOC04Nzk4LTU5ZmYzMjI1YjdhZiIsImFjciI6IjEiLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy12cmUiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInNpZCI6ImZlMTlmNjc0LTMwNjgtNGUwOC05N2VkLTVmNTRjYWE5OGVhNCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZ3JvdXBzIjpbInVzZXJzIl0sInByZWZlcnJlZF91c2VybmFtZSI6InRlc3QtdXNlci0yIn0.yWYUvpVsMzCL9YOT3zPbul-OmASPiS5hgBcGS37UJi0"
+            headers = {
+                "Authorization": f"Bearer {fake_token}",
+                "Content-Type": "application/json"
+            }
+
+            # print(json.dumps(extract_cell_data, indent=2))
+
+            extract_cell_req = requests.post(url=extract_cell_url, json=extract_cell_data, headers=headers)
+
+
+            # print(json.dumps(extract_cell_req.json(), indent=2))
+
+            containerize_url = "http://localhost:8000/containerize"
+
+            containerize_data = {
+                "cell": extract_cell_req.json()
+            }
+
+            print(json.dumps(containerize_data, indent=2))
+
+            containerize_req = requests.post(url=containerize_url, json=containerize_data, headers=headers)
+
+            #print(json.dumps(containerize_req.json(), indent=2))
+
+
+        # with open('/output/modified.R') as r_file:
+        #     data = r_file.read()
+        #     url = "http://localhost:8000/containerize"
+        #
+        #     params = {
+        #         "cell": {
+        #             "title": "Test",
+        #             "base_container_image": {
+        #                 "build": "ghcr.io/qcdis/naavre/naavre-cell-build-r:v0.18",
+        #                 "runtime": "ghcr.io/qcdis/naavre/naavre-cell-runtime-r:v0.18"
+        #             },
+        #             "inputs": [],
+        #             "outputs": [],
+        #             "params": [],
+        #             "secrets": [],
+        #             "confs": [],
+        #             "dependencies": [],
+        #             "chart_obj": {},
+        #             "kernel": "IRkernel",
+        #             "original_source": data
+        #         }
+        #     }
 
 
 program('data/05_IntegratedPPems_small.R')
