@@ -3,3 +3,4 @@ environment:
   llvm_path: C:\Program Files\LLVM\bin
 settings:
   use_json: True
+  containerize_R: False

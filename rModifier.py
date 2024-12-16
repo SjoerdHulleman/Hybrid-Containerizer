@@ -125,7 +125,7 @@ def extract_arguments(function_call: str, function_name: str) -> list:
     return result
 
 
-def replace_function_calls(function_calls: list[RFunctionCall], cpp_functions: list[cppModifier.CppFunction], r_file_path: pathlib.Path, use_json: bool = False):
+def replace_function_calls(function_calls: list[RFunctionCall], cpp_functions: list[cppModifier.CppFunction], r_file_path: pathlib.Path, folder: str, use_json: bool = False):
     code_blocks = []
 
     for function_call in function_calls:
@@ -212,7 +212,8 @@ def replace_function_calls(function_calls: list[RFunctionCall], cpp_functions: l
         lines.insert(0, libraries)
 
         # Write to new file
-        with open("output/modified.R", "w", encoding='utf-8') as new_r_file:
+        with open(f"output/{folder}/modified.R", "w", encoding='utf-8') as new_r_file:
+            new_r_file.write(f"# {folder}\n")
             for line in lines:
                 new_r_file.write(line)
             new_r_file.close()

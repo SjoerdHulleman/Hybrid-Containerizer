@@ -43,7 +43,7 @@ def find_cpp_file(language: ProgrammingLanguage) -> pathlib.Path:
             if 'sourceCpp' in line:
                 result = re.sub(r'\s*#.*', '', line)
 
-                cpp_file_name = result.strip().strip("sourceCpp(\"").strip("\")")
+                cpp_file_name = result.strip().replace("sourceCpp(\"", "").replace("\")", "")
 
     cpp_file_path = pathlib.Path(parent_path) / cpp_file_name
 
@@ -133,14 +133,16 @@ def extract_functions(node, functions, filepath: pathlib.Path):
         extract_functions(child, functions, filepath)
 
 
-def create_api(source_cpp_path: pathlib.Path, base_cpp_path: pathlib.Path, functions: list[CppFunction], use_json: bool = False):
+def create_api(source_cpp_path: pathlib.Path, base_cpp_path: pathlib.Path, functions: list[CppFunction], folder: str, use_json: bool = False):
     # Copy the base to the output directory so we can start modifying
-    output_path = pathlib.Path('./output/modified.cpp')
+    output_path = pathlib.Path(f'output/{folder}/modified.cpp')
 
     if use_json:
-        output_path = pathlib.Path('./CppProjectOutputJSON/modified.cpp')
+        shutil.copytree('CppProjectOutputJSON', f'output/{folder}/CppProjectOutputJSON')
+        output_path = pathlib.Path(f'output/{folder}/CppProjectOutputJSON/modified.cpp')
     else:
-        output_path = pathlib.Path('./CppProjectOutputCSV/modified.cpp')
+        shutil.copytree('CppProjectOutputCSV', f'output/{folder}/CppProjectOutputCSV')
+        output_path = pathlib.Path(f'output/{folder}/CppProjectOutputCSV/modified.cpp')
 
     shutil.copyfile(base_cpp_path, output_path)
     with open(source_cpp_path, 'r') as source_file:
