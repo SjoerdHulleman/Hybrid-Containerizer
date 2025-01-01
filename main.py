@@ -81,6 +81,7 @@ def program(file_path_input):
     llvm_path = ''
     use_json = False
     folder = ''
+    containerize_R = False
 
     if len(path.parts) > 2:
         # Assuming we always use "input/folderName/rFile.R" structure
@@ -90,6 +91,7 @@ def program(file_path_input):
         config = yaml.safe_load(yaml_file)
         llvm_path = config["environment"]["llvm_path"]
         use_json = config["settings"]["use_json"]
+        containerize_R = config["settings"]["containerize_R"]
 
     if llvm_path is None or llvm_path == '':
         raise Exception("LLVM path is not specified in config.yaml")
@@ -110,7 +112,8 @@ def program(file_path_input):
         modified_cpp_name = pathlib.Path(modified_cpp_name + '_mod.cpp')
 
         modified_cpp_name = pathlib.Path('data/test_cpp.cpp')
-        modified_cpp_name = pathlib.Path('input/test1/source_mod.cpp')
+        #modified_cpp_name = pathlib.Path('input/test1/source_mod.cpp')
+        modified_cpp_name = pathlib.Path('input/nioz/test_cpp.cpp')
 
         # cppModifier.write_cpp_file(stripped_cpp, modified_cpp_name)
 
@@ -130,11 +133,13 @@ def program(file_path_input):
         rModifier.replace_function_calls(function_calls, functions, file_path_input, folder, use_json)
 
         # Containerize the R file
-        rContainerizer.containerize_r_file(pathlib.Path(f'output/{folder}/modified.R'), folder)
+        if containerize_R:
+            rContainerizer.containerize_r_file(pathlib.Path(f'output/{folder}/modified.R'), folder)
 
 
 #program('data/05_IntegratedPPems_small.R')
-program('input/test1/source_r.R')
+program('input/nioz/nioz_r.R')
+#program('input/test1/source_r.R')
 
 # program_temp("data/test_cpp.cpp")
 

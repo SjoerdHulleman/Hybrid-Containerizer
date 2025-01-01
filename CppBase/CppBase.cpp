@@ -441,6 +441,7 @@ int main()
         std::list<std::string> inputs = { "zmax","kd","par","alfa","eopt","pmax","height" };
         // ----- End of auto generate inputs -----
 
+        auto start_conv = std::chrono::high_resolution_clock::now();
         std::vector<std::any> converted_inputs = convertInputs(inputs, jsonBody);
 
         // ----- Auto generate assigned converted results and function call -----
@@ -451,7 +452,17 @@ int main()
         const std::vector<std::vector<double>>& eopt = std::any_cast<const std::vector<std::vector<double>> &>(converted_inputs[4]);
         const std::vector<std::vector<double>>& pmax = std::any_cast<const std::vector<std::vector<double>> &>(converted_inputs[5]);
         const std::vector<std::vector<double>>& height = std::any_cast<const std::vector<std::vector<double>> &>(converted_inputs[6]);
+        auto end_conv = std::chrono::high_resolution_clock::now();
+        auto duration_conv = std::chrono::duration_cast<std::chrono::milliseconds>(end_conv - start_conv);
+        std::cout << "Conversion from json for intPP_mixed took: " << duration_conv.count() << std::endl;
+
+
+        auto start_call = std::chrono::high_resolution_clock::now();
         std::vector<std::vector<double>> result = intPP_mixed(zmax, kd, par, alfa, eopt, pmax, height);
+        auto end_call = std::chrono::high_resolution_clock::now();
+        auto duration_call = std::chrono::duration_cast<std::chrono::milliseconds>(end_call - start_call);
+        std::cout << "Call of function intPP_mixed took: " << duration_call.count() << std::endl;
+
         // ----- End of auto generate assigned converted results and function call -----
 
         json json_result = result;

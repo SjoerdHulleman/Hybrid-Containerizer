@@ -16,7 +16,7 @@ class CppParam:
 
 
 class CppFunction:
-    def __init__(self, functionName: str, returnType, parameters: list[CppParam], startLine: int, endLine: int):
+    def __init__(self, functionName: str, returnType: str, parameters: list[CppParam], startLine: int, endLine: int):
         self.functionName = functionName
         self.returnType = returnType
         self.parameters = parameters
@@ -213,6 +213,7 @@ def add_api_endpoints_to_cpp(functions: list[CppFunction], template_lines: list[
         api_lines += ('};\n'
                       '\t\t// ----- End of auto generate inputs -----\n'
                       '\n'
+                      '\t\tauto start_conv = std::chrono::high_resolution_clock::now();\n'
                       '\t\tstd::vector<std::any> converted_inputs = convertInputs(inputs, jsonBody);\n'
                       '\n'
                       '\t\t// ----- Auto generate assigned converted results and function call -----\n')
@@ -223,7 +224,17 @@ def add_api_endpoints_to_cpp(functions: list[CppFunction], template_lines: list[
             if index < len(function.parameters) - 1:
                 param_names += ","
 
-        api_lines += (f'\t\t{function.returnType} result = {function.functionName}({param_names});\n'
+        api_lines += (f'\t\tauto end_conv = std::chrono::high_resolution_clock::now();\n'
+                      f'\t\tauto duration_conv = std::chrono::duration_cast<std::chrono::milliseconds>(end_conv - start_conv);\n'
+                      f'\n'
+                      f'\t\tstd::cout << "Conversion from request data for {function.functionName} took: " << duration_conv.count() << std::endl;\n'
+                      f'\n'
+                      f'\t\tauto start_call = std::chrono::high_resolution_clock::now();\n'
+                      f'\t\t{function.returnType} result = {function.functionName}({param_names});\n'
+                      f'\t\tauto end_call = std::chrono::high_resolution_clock::now();\n'
+                      f'\t\tauto duration_call = std::chrono::duration_cast<std::chrono::milliseconds>(end_call - start_call);\n'
+                      f'\t\tstd::cout << "Call of function intPP_mixed took: " << duration_call.count() << std::endl;\n'
+                      f'\n'
                       f'\t\t// ----- End of auto generate assigned converted results and function call -----\n'
                       '\n')
 

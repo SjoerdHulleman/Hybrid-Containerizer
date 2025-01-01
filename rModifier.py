@@ -212,11 +212,14 @@ def replace_function_calls(function_calls: list[RFunctionCall], cpp_functions: l
         lines.insert(0, libraries)
 
         # Write to new file
-        with open(f"output/{folder}/modified.R", "w", encoding='utf-8') as new_r_file:
+        new_r_file_path = pathlib.Path(f"output/{folder}/modified.R")
+        with open(new_r_file_path, "w", encoding='utf-8') as new_r_file:
             new_r_file.write(f"# {folder}\n")
             for line in lines:
                 new_r_file.write(line)
             new_r_file.close()
+
+        disable_rcpp(new_r_file_path)
 
         r_file.close()
 
@@ -301,4 +304,19 @@ def apply_json_numeric_conversion(paramType: str, argument: str, add_arg_name: b
 
     # In other cases, we change nothing
     return argument
+
+
+def disable_rcpp(r_file_path: pathlib.Path):
+    lines = []
+    with open(r_file_path, "r") as file_read:
+        lines = file_read.readlines()
+        for line in lines:
+            if 'sourceCpp' in line or 'library(Rcpp)' in line:
+                # Comment out the line
+                line = f'# {line}'
+        file_read.close()
+
+    with open(r_file_path, "w") as file_write:
+        file_write.writelines(lines)
+
 
