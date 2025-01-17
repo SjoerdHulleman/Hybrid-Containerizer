@@ -131,7 +131,7 @@ def replace_function_calls(function_calls: list[RFunctionCall], cpp_functions: l
     for function_call in function_calls:
         function = next(function for function in cpp_functions if function.functionName == function_call.name)
 
-        print(f"----- {function.functionName} -----")
+        # print(f"----- {function.functionName} -----")
         conv_code = "# Convert each param to {conversion} format\n".format(conversion="JSON" if use_json else "CSV")
         list_code = (f"# Prepare a list for JSON conversion\n"
                      f"list_{function_call.assigned_var} <- list(\n")
@@ -182,7 +182,7 @@ def replace_function_calls(function_calls: list[RFunctionCall], cpp_functions: l
                       + conv_code + "\n" + list_code + "\n" + json_code + "\n" + url_code + "\n" + response_code + "\n" + content_code + "\n" + var_code + "\n" +
                       "}"
                       "# ---- END OF AUTO-GENERATED CODE ----- #\n")
-        print(code_block)
+        # print(code_block)
         code_blocks.append(code_block)
 
     # Replace the call in R code
@@ -191,10 +191,10 @@ def replace_function_calls(function_calls: list[RFunctionCall], cpp_functions: l
         # Comment out all old function calls before file structure changes
         for index, code_block in enumerate(code_blocks):
             function_call = function_calls[index]
-            print(function_call.start_line, " - ", function_call.end_line)
+            # print(function_call.start_line, " - ", function_call.end_line)
             # Comment out old code
             for x in range(function_call.start_line-1, function_call.end_line):
-                print(f"Commenting out: {lines[x]}")
+                # print(f"Commenting out: {lines[x]}")
                 lines[x] = "# " + lines[x]
 
         # Insert all code blocks
@@ -295,7 +295,7 @@ def apply_json_numeric_conversion(paramType: str, argument: str, add_arg_name: b
         # vector_elem_type = vector_match.group(1)
 
         # Add as.matrix() around argument
-        argument = f"vector(as.numeric({argument}))"
+        argument = f"as.vector(as.numeric({argument}))"
 
         if add_arg_name:
             argument = prepend + argument

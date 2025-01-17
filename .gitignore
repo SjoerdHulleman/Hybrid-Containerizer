@@ -9,7 +9,10 @@ CppProjectOutputCSV/.vs
 CppProjectOutputJSON/asio
 CppProjectOutputJSON/.vs
 CppProjectOutputTest
-output/*
+output/
+input/
+__pycache__/
+.idea/
 
 # Prerequisites
 *.d

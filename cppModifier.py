@@ -233,7 +233,7 @@ def add_api_endpoints_to_cpp(functions: list[CppFunction], template_lines: list[
                       f'\t\t{function.returnType} result = {function.functionName}({param_names});\n'
                       f'\t\tauto end_call = std::chrono::high_resolution_clock::now();\n'
                       f'\t\tauto duration_call = std::chrono::duration_cast<std::chrono::milliseconds>(end_call - start_call);\n'
-                      f'\t\tstd::cout << "Call of function intPP_mixed took: " << duration_call.count() << std::endl;\n'
+                      f'\t\tstd::cout << "Call of function {function.functionName} took: " << duration_call.count() << std::endl;\n'
                       f'\n'
                       f'\t\t// ----- End of auto generate assigned converted results and function call -----\n'
                       '\n')

@@ -1,9 +1,0 @@
-Called function: rad_bot
-Lines 40 - 43:
-Arguments: [
-    'Bat_xyv$depth',
-    'as.matrix(WKd_Ems[,-1])',
-    'as.matrix(Irrad_Ems[,-1])',
-    'as.matrix(WHeight_Ems[,-1])'
-]
-Assigned variable: Rad

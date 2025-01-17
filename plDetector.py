@@ -1,5 +1,4 @@
 import json
-import pathlib
 
 from data.languages import SUPPORTED_LANGUAGES
 from pathlib import Path

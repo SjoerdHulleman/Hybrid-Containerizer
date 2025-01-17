@@ -4,3 +4,7 @@ environment:
 settings:
   use_json: True
   containerize_R: False
+  # e.g. \input\base_line_standard.cpp
+input:
+  input_script: input\mergesort_test\merge_sort.R
+  converted_cpp_file_path: input\mergesort_test\merge_sort_standard.cpp
