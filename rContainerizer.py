@@ -60,7 +60,7 @@ def containerize_r_file(r_file_path: pathlib.Path, folder: str):
         print(json.dumps(containerize_req.json()))
 
         containerize_out_json = containerize_req.json()
-        print(f"Containerization of R file completed, please find the workflow at: {containerize_out_json["workflow_url"]}"
+        print(f"Containerization of R file completed, please find the workflow at: {containerize_out_json['workflow_url']}"
               f". The created files can be found in your output repository.")
 
 

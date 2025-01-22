@@ -6,5 +6,5 @@ settings:
   containerize_R: False
   # e.g. \input\base_line_standard.cpp
 input:
-  input_script: input\mergesort_test\merge_sort.R
-  converted_cpp_file_path: input\mergesort_test\merge_sort_standard.cpp
+  input_script: input\nioz\nioz_r.R
+  converted_cpp_file_path: input\nioz\test_cpp.cpp
